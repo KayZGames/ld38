@@ -5,7 +5,7 @@ dependencies:
   dartemis:
     path: ../dartemis
   dartemis_transformer: 
-    path: ../dartemis
+    path: ../dartemis_transformer
   gamedev_helpers:
 #    git: https://github.com/denniskaselow/gamedev_helpers
     path: ../gamedev_helpers
