@@ -13,7 +13,7 @@ class Game extends GameBase {
   CanvasElement hudCanvas;
   CanvasRenderingContext2D hudCtx;
 
-  Game() : super.noAssets('ld38', '#game', 800, 600) {
+  Game() : super('ld38', '#game', 800, 600, bodyDefsName: null) {
     hudCanvas = querySelector('#hud');
     hudCtx = hudCanvas.context2D;
     hudCtx
@@ -22,11 +22,17 @@ class Game extends GameBase {
 
   }
   void createEntities() {
-    addEntity([new Position(0, 0), new Slime()]);
+    addEntity([new Position(1, 1), new Slime()]);
+
+    addEntity([new Road(1, 1, 2, 1)]);
 
     addEntity([new Road(1, 3, 2, 1)]);
     addEntity([new Road(2, 1, 3, 3)]);
     addEntity([new Road(1, 3, 3, 3)]);
+
+    addEntity([new Road(1, 4, 2, 2)]);
+    addEntity([new Road(2, 2, 3, 4)]);
+    addEntity([new Road(1, 4, 3, 4)]);
 
   }
 
@@ -34,6 +40,7 @@ class Game extends GameBase {
     return {
       GameBase.rendering: [
         new CanvasCleaningSystem(hudCanvas),
+        new MapRenderingSystem(ctx, spriteSheet),
         new RoadRenderingSystem(ctx),
         new SlimeRenderingSystem(ctx),
         new FpsRenderingSystem(hudCtx, fillStyle: 'white'),
@@ -47,6 +54,7 @@ class Game extends GameBase {
   @override
   onInit() {
     world.addManager(new GameStateManager());
+    world.addManager(new MapManager());
   }
 
 

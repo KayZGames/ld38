@@ -2,5 +2,5 @@ part of shared;
 
 
 class GameStateManager extends Manager {
-  num cameraX = 400, cameraY = 300, zoom = 1;
+  num cameraX = 0, cameraY = 0, zoom = 1;
 }
