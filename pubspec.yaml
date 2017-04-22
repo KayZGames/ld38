@@ -10,6 +10,7 @@ dependencies:
 #    git: https://github.com/denniskaselow/gamedev_helpers
     path: ../gamedev_helpers
   dart_to_js_script_rewriter: any
+  a_star: ^0.3.0
 transformers:
 - dart_to_js_script_rewriter
 - dartemis_transformer:
