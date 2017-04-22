@@ -3,7 +3,7 @@ part of shared;
 
 class MapManager extends Manager {
 
-  final List<List<Tile>> map = new List.generate(100, (_) => new List.generate(100, _generateTile));
+  final List<List<Tile>> map = new List.generate(maxY, (_) => new List.generate(maxX, _generateTile));
 
 
   static Tile _generateTile(_) {

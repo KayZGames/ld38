@@ -14,7 +14,7 @@ class SlimeRenderingSystem extends EntityProcessingSystem {
 
     ctx
       ..save()
-      ..translate(convertX(p.x, p.y) + gsm.cameraX, convertY(p.y) + gsm.cameraY)
+      ..translate(convertX(p.x, p.y) - gsm.cameraX, convertY(p.y) - gsm.cameraY)
       ..scale(gsm.zoom, gsm.zoom)
       ..fillStyle = 'blue'
       ..beginPath()
@@ -49,7 +49,7 @@ class RoadRenderingSystem extends EntityProcessingSystem {
     ctx
       ..save()
       ..lineWidth = 3
-      ..translate(gsm.cameraX, gsm.cameraY)
+      ..translate(-gsm.cameraX, -gsm.cameraY)
       ..scale(gsm.zoom, gsm.zoom)
       ..strokeStyle = 'brown'
       ..beginPath()
@@ -95,13 +95,13 @@ class MapRenderingSystem extends VoidEntitySystem {
         var realY = convertY(y) - pixelPerHeight * 0.5;
         bufferCtx.drawImageScaledFromSource(
             sheet.image,
-            sprite.src.left,
-            sprite.src.top,
-            sprite.src.width,
-            sprite.src.height,
-            realX,
+            sprite.src.left + 1,
+            sprite.src.top + 1,
+            sprite.src.width - 2,
+            sprite.src.height - 2,
+            realX - 1,
             realY,
-            pixelPerWidth,
+            pixelPerWidth + 2,
             pixelPerHeight);
       }
     }
@@ -109,7 +109,7 @@ class MapRenderingSystem extends VoidEntitySystem {
 
   @override
   void processSystem() {
-    ctx.drawImageScaledFromSource(buffer, -gsm.cameraX, -gsm.cameraY,
+    ctx.drawImageScaledFromSource(buffer, gsm.cameraX, gsm.cameraY,
         800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
   }
 }

@@ -6,6 +6,8 @@ part 'src/shared/game_state_manager.dart';
 part 'src/shared/map_manager.dart';
 part 'src/shared/systems/logic.dart';
 
+const maxX = 20;
+const maxY = 20;
 const String cameraTag = 'camera';
 const double pixelPerHeight = 100.0;
 const double verticalDistance = 75.0;

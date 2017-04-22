@@ -2,7 +2,7 @@
 
 "carbon":
 {
-	"frame": {"x":134,"y":302,"w":130,"h":148},
+	"frame": {"x":130,"y":296,"w":130,"h":148},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
@@ -10,7 +10,7 @@
 },
 "grass-0":
 {
-	"frame": {"x":134,"y":152,"w":130,"h":148},
+	"frame": {"x":130,"y":148,"w":130,"h":148},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
@@ -18,7 +18,7 @@
 },
 "grass-1":
 {
-	"frame": {"x":266,"y":2,"w":130,"h":148},
+	"frame": {"x":260,"y":0,"w":130,"h":148},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
@@ -26,7 +26,7 @@
 },
 "grass-2":
 {
-	"frame": {"x":134,"y":2,"w":130,"h":148},
+	"frame": {"x":130,"y":0,"w":130,"h":148},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
@@ -34,7 +34,7 @@
 },
 "grass-3":
 {
-	"frame": {"x":2,"y":304,"w":130,"h":148},
+	"frame": {"x":0,"y":298,"w":130,"h":148},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
@@ -42,7 +42,7 @@
 },
 "hexagon":
 {
-	"frame": {"x":2,"y":2,"w":130,"h":150},
+	"frame": {"x":0,"y":0,"w":130,"h":150},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":150},
@@ -50,7 +50,7 @@
 },
 "water":
 {
-	"frame": {"x":2,"y":154,"w":130,"h":148},
+	"frame": {"x":0,"y":150,"w":130,"h":148},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
@@ -63,6 +63,6 @@
 	"format": "RGBA8888",
 	"size": {"w":512,"h":512},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:82aad67005829efc79f783c78bd038cc:641a7213bcaba071802195527b12ea69:a759b6bbc8381ac9c472b28f589ad0d6$"
+	"smartupdate": "$TexturePacker:SmartUpdate:41322a597ea5a0ae9a9e0b4824d6f1d7:641a7213bcaba071802195527b12ea69:a759b6bbc8381ac9c472b28f589ad0d6$"
 }
 }

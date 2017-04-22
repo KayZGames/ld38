@@ -10,19 +10,14 @@ part 'src/client/systems/events.dart';
 part 'src/client/systems/rendering.dart';
 
 class Game extends GameBase {
-  CanvasElement hudCanvas;
-  CanvasRenderingContext2D hudCtx;
 
-  Game() : super('ld38', '#game', 800, 600, bodyDefsName: null) {
-    hudCanvas = querySelector('#hud');
-    hudCtx = hudCanvas.context2D;
-    hudCtx
-      ..textBaseline = 'top'
-      ..font = '16px Verdana';
+  Game() : super('ld38', '#game', 800, 600, bodyDefsName: null);
 
-  }
   void createEntities() {
     addEntity([new Position(1, 1), new Slime()]);
+    addEntity([new Position(maxX - 2, maxY - 2), new Slime()]);
+    addEntity([new Position(maxX - 1, maxY - 2), new Slime()]);
+    addEntity([new Position(maxX - 1, maxY - 1), new Slime()]);
 
     addEntity([new Road(1, 1, 2, 1)]);
 
@@ -39,11 +34,12 @@ class Game extends GameBase {
   Map<int, List<EntitySystem>> getSystems() {
     return {
       GameBase.rendering: [
-        new CanvasCleaningSystem(hudCanvas),
+        new MouseInputSystem(canvas),
+        new CanvasCleaningSystem(canvas, fillStyle: 'black'),
         new MapRenderingSystem(ctx, spriteSheet),
         new RoadRenderingSystem(ctx),
         new SlimeRenderingSystem(ctx),
-        new FpsRenderingSystem(hudCtx, fillStyle: 'white'),
+        new FpsRenderingSystem(ctx, fillStyle: 'white'),
       ],
       GameBase.physics: [
         // add at least one
