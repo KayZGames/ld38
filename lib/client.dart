@@ -23,12 +23,18 @@ class Game extends GameBase {
   }
   void createEntities() {
     addEntity([new Position(0, 0), new Slime()]);
+
+    addEntity([new Road(1, 3, 2, 1)]);
+    addEntity([new Road(2, 1, 3, 3)]);
+    addEntity([new Road(1, 3, 3, 3)]);
+
   }
 
   Map<int, List<EntitySystem>> getSystems() {
     return {
       GameBase.rendering: [
         new CanvasCleaningSystem(hudCanvas),
+        new RoadRenderingSystem(ctx),
         new SlimeRenderingSystem(ctx),
         new FpsRenderingSystem(hudCtx, fillStyle: 'white'),
       ],
@@ -37,4 +43,11 @@ class Game extends GameBase {
       ]
     };
   }
+
+  @override
+  onInit() {
+    world.addManager(new GameStateManager());
+  }
+
+
 }
