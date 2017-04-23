@@ -2,29 +2,41 @@ part of client;
 
 class SlimeRenderingSystem extends EntityProcessingSystem {
   GameStateManager gsm;
-  Mapper<Position> pm;
+  Mapper<PixelPosition> pm;
+  Mapper<Slime> sm;
+  Mapper<Age> am;
   CanvasRenderingContext2D ctx;
 
   SlimeRenderingSystem(this.ctx)
-      : super(Aspect.getAspectForAllOf([Position, Slime]));
+      : super(Aspect.getAspectForAllOf([PixelPosition, Slime, Age]));
 
   @override
   void processEntity(Entity entity) {
     var p = pm[entity];
+    var s = sm[entity];
+    var a = am[entity];
+
+    final age = world.time() - a.birthTime;
+    final jumpHeight = max(0.0, sin(age * 5) + 0.2) * 500 * world.delta;
+    final squeezeFactor = max(0.8, sin(age * 5) + 0.4);
 
     ctx
       ..save()
       ..scale(gsm.zoom, gsm.zoom)
       ..translate(-gsm.cameraX, -gsm.cameraY)
-      ..translate(convertX(p.x, p.y), convertY(p.y))
+      ..translate(p.x, p.y - jumpHeight)
       ..fillStyle = 'blue'
       ..beginPath()
       ..moveTo(0, 0)
-      ..bezierCurveTo(5, 0, 10, 0, 10, -10)
-      ..bezierCurveTo(10, -15, 0, -15, 0, -20)
+      ..bezierCurveTo(5 / squeezeFactor, 0, 10 / squeezeFactor, 0,
+          10 / squeezeFactor, -10 * squeezeFactor)
+      ..bezierCurveTo(10 / squeezeFactor, -15 * squeezeFactor, 0,
+          -15 * squeezeFactor, 0, -20 * squeezeFactor)
       ..moveTo(0, 0)
-      ..bezierCurveTo(-5, 0, -10, 0, -10, -10)
-      ..bezierCurveTo(-10, -15, 0, -15, 0, -20)
+      ..bezierCurveTo(-5 / squeezeFactor, 0, -10 / squeezeFactor, 0,
+          -10 / squeezeFactor, -10 * squeezeFactor)
+      ..bezierCurveTo(-10 / squeezeFactor, -15 * squeezeFactor, 0,
+          -15 * squeezeFactor, 0, -20 * squeezeFactor)
       ..closePath()
       ..fill()
       ..restore();
@@ -174,14 +186,14 @@ class DebugCoordRenderingSystem extends VoidEntitySystem {
 }
 
 class BuildingRenderingSystem extends EntityProcessingSystem {
-  Mapper<Position> pm;
+  Mapper<GridPosition> pm;
   Mapper<Building> bm;
   GameStateManager gsm;
 
   CanvasRenderingContext2D ctx;
   SpriteSheet sheet;
   BuildingRenderingSystem(this.ctx, this.sheet)
-      : super(Aspect.getAspectForAllOf([Position, Building]));
+      : super(Aspect.getAspectForAllOf([GridPosition, Building]));
 
   @override
   void processEntity(Entity entity) {

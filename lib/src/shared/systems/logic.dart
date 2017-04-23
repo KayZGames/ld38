@@ -63,7 +63,8 @@ class BuildRoadActionSystem extends EntityProcessingSystem {
   void processEntity(Entity entity) {
     final action = bram[entity];
 
-    if (gsm.selectedMapCoord.x != action.endX || gsm.selectedMapCoord.y != action.endY) {
+    if (gsm.selectedMapCoord.x != action.endX ||
+        gsm.selectedMapCoord.y != action.endY) {
       action.endX = gsm.selectedMapCoord.x;
       action.endY = gsm.selectedMapCoord.y;
 
@@ -114,8 +115,11 @@ class BuildRoadAbortSystem extends EntityProcessingSystem {
 class BuildRoadExecutionSystem extends EntityProcessingSystem {
   GroupManager gm;
   Mapper<RoadFragment> rfm;
+  Mapper<BuildRoadAction> bram;
+  Mapper<GridPosition> pm;
   GameStateManager gsm;
   MapManager mapManager;
+  TagManager tm;
 
   BuildRoadExecutionSystem()
       : super(Aspect.getAspectForAllOf(
@@ -123,6 +127,7 @@ class BuildRoadExecutionSystem extends EntityProcessingSystem {
 
   @override
   void processEntity(Entity entity) {
+    final action = bram[entity];
     final newRoad = gm.getEntities(temporaryRoadGroup);
     if (newRoad.length > 0) {
       newRoad.forEach((fragment) {
@@ -130,8 +135,14 @@ class BuildRoadExecutionSystem extends EntityProcessingSystem {
         rfm[fragment].temp = false;
         mapManager.registerRoad(rfm[fragment]);
       });
-      mapManager.createBuilding(
-          gsm.selectedMapCoord.x, gsm.selectedMapCoord.y, 'road_sign');
+      mapManager.createBuilding(action.endX, action.endY, 'road_sign');
+      final hqPos = pm[tm.getEntity(hqTag)];
+      world.createAndAddEntity([
+        new Slime(),
+        new Age(world.time()),
+        new GridPosition(hqPos.x, hqPos.y),
+        new Patrol(action.startX, action.startY, action.endX, action.endY)
+      ]);
     }
   }
 }
@@ -170,9 +181,82 @@ class BuildBuildingExecutionAction extends EntityProcessingSystem {
       final y = (baseY + pixelPerHeight * buildingType.y) * gsm.zoom;
       final radius = gsm.zoom * pixelPerWidth / 4;
       return gsm.mousePos.distanceTo(new Point(x, y)) < radius;
-    }, orElse: null);
+    }, orElse: () => null);
     if (buildingToBuild != null) {
       mapManager.createBuilding(action.x, action.y, buildingToBuild.type);
+    }
+  }
+}
+
+class PatrolAction extends EntityProcessingSystem {
+  Mapper<GridPosition> positionMapper;
+  Mapper<Patrol> patrolMapper;
+  MapManager mapManager;
+  PatrolAction()
+      : super(Aspect
+            .getAspectForAllOf([GridPosition, Patrol]).exclude([WayPoints]));
+
+  @override
+  void processEntity(Entity entity) {
+    final pos = positionMapper[entity];
+    final patrol = patrolMapper[entity];
+
+    final patrolRoute = mapManager.getRoadRoute(
+        patrol.startX, patrol.startY, patrol.endX, patrol.endY);
+    final patrolMiddle = patrolRoute[patrolRoute.length ~/ 2];
+
+    if (patrolMiddle.x != pos.x || patrolMiddle.y != pos.y) {
+      final route =
+          mapManager.getRoadRoute(pos.x, pos.y, patrolMiddle.x, patrolMiddle.y);
+      final List<Point> waypoints = [];
+      route.reversed.forEach((tile) {
+        final x = convertX(tile.x, tile.y) + pixelPerWidth / 2;
+        final y = convertY(tile.y) + pixelPerHeight / 2;
+        waypoints.add(new Point(x, y));
+      });
+      entity.addComponent(new WayPoints(waypoints));
+      entity.addComponent(new PixelPosition(
+          convertX(pos.x, pos.y) + pixelPerWidth / 2,
+          convertY(pos.y) + pixelPerHeight / 2));
+      entity.removeComponent(GridPosition);
+      entity.changedInWorld();
+    }
+  }
+}
+
+class WayPointVisitSystem extends EntityProcessingSystem {
+  Mapper<PixelPosition> pm;
+  Mapper<WayPoints> wm;
+  Mapper<Age> am;
+
+  WayPointVisitSystem()
+      : super(Aspect.getAspectForAllOf([WayPoints, PixelPosition, Age]));
+
+  @override
+  void processEntity(Entity entity) {
+    final wayPoints = wm[entity];
+    final pos = pm[entity];
+    final a = am[entity];
+
+    final nextWaypoint = wayPoints.values.last;
+
+    final diffX = pos.x - nextWaypoint.x;
+    final diffY = pos.y - nextWaypoint.y;
+
+    final angle = atan2(diffY, diffX);
+
+    final age = world.time() - a.birthTime;
+    final moveDistance = max(0.0, sin(age * 5) + 0.2) * world.delta * 20;
+
+    pos.x -= diffX.sign * min(diffX.abs(), moveDistance * cos(angle).abs());
+    pos.y -= diffY.sign * min(diffY.abs(), moveDistance * sin(angle).abs());
+
+    if (pos.x == nextWaypoint.x && pos.y == nextWaypoint.y) {
+      wayPoints.values.removeLast();
+      if (wayPoints.values.length == 0) {
+        entity.removeComponent(WayPoints);
+        entity.changedInWorld();
+      }
     }
   }
 }

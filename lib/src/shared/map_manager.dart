@@ -2,9 +2,14 @@ part of shared;
 
 class MapManager extends Manager {
   TerrainMap map;
+  RoadMap roadMap;
   AStar<TerrainTile> pathfinder;
+  AStar<TerrainTile> roadPathfinder;
+  bool firstRoadSearch = true;
   MapManager() : map = new TerrainMap() {
+    roadMap = new RoadMap(map);
     pathfinder = new AStar<TerrainTile>(map);
+    roadPathfinder = new AStar<TerrainTile>(roadMap);
   }
 
   TerrainTile getTile(int x, int y) => map.map[y][x];
@@ -18,11 +23,23 @@ class MapManager extends Manager {
         .toList();
   }
 
+  List<TerrainTile> getRoadRoute(int startX, int startY, int endX, int endY) {
+    final patrolStartTile = getTile(startX, startY);
+    final patrolEndTile = getTile(endX, endY);
+    // something something lazy
+    if (firstRoadSearch) {
+      roadPathfinder.findPathSync(patrolStartTile, patrolEndTile).toList();
+      firstRoadSearch = false;
+    }
+    return roadPathfinder.findPathSync(patrolStartTile, patrolEndTile).toList();
+  }
+
   TerrainTile getRoadSignTile(int x, int y) =>
       getTile(y % 2 == 0 ? x + 1 : x, y + 1);
 
-  void createBuilding(int x, int y, String buildingId) {
-    world.createAndAddEntity([new Position(x, y), new Building(buildingId)]);
+  Entity createBuilding(int x, int y, String buildingId) {
+    final building = world
+        .createAndAddEntity([new GridPosition(x, y), new Building(buildingId)]);
     getTile(x, y).building = buildingId;
     getTile(x, y).hasRoad = true;
     if (buildingId != 'road_sign') {
@@ -32,7 +49,7 @@ class MapManager extends Manager {
 
       if (roadSignTile.building == null) {
         world.createAndAddEntity([
-          new Position(roadSignTile.x, roadSignTile.y),
+          new GridPosition(roadSignTile.x, roadSignTile.y),
           new Building('road_sign')
         ]);
         roadSignTile.building = 'road_sign';
@@ -42,6 +59,7 @@ class MapManager extends Manager {
             .building} when trying to place road_sign';
       }
     }
+    return building;
   }
 
   void registerRoad(RoadFragment roadFragment) {
@@ -133,4 +151,17 @@ class TerrainMap implements Graph<TerrainTile> {
     }
     return new TerrainTile(x, y, TileType.empty);
   }
+}
+
+class RoadMap implements Graph<TerrainTile> {
+  final TerrainMap map;
+  RoadMap(this.map);
+
+  Iterable<TerrainTile> get allNodes =>
+      map.allNodes.where((tile) => tile.hasRoad);
+  num getDistance(TerrainTile a, TerrainTile b) => 1;
+  num getHeuristicDistance(TerrainTile a, TerrainTile b) =>
+      map.getHeuristicDistance(a, b);
+  Iterable<TerrainTile> getNeighboursOf(TerrainTile node) =>
+      map.getNeighboursOf(node).where((tile) => tile.hasRoad);
 }

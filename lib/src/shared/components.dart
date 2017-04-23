@@ -1,11 +1,20 @@
 part of shared;
 
-class Position extends Component {
+class GridPosition extends Component {
   num x, y;
-  Position(this.x, this.y);
+  GridPosition(this.x, this.y);
+}
+class PixelPosition extends Component {
+  num x, y;
+  PixelPosition(this.x, this.y);
 }
 
 class Slime extends Component {}
+
+class Age extends Component {
+  double birthTime;
+  Age(this.birthTime);
+}
 
 class RoadFragment extends Component {
   int startX, startY, endX, endY;
@@ -13,6 +22,12 @@ class RoadFragment extends Component {
 
   RoadFragment(this.startX, this.startY, this.endX, this.endY,
       {this.temp: false});
+}
+
+class Patrol extends Component {
+  int startX, startY, endX, endY;
+
+  Patrol(this.startX, this.startY, this.endX, this.endY);
 }
 
 class Building extends Component {
@@ -33,3 +48,8 @@ class BuildBuildingAction extends Component {
 class AbortAction extends Component {}
 
 class ExecuteAction extends Component {}
+
+class WayPoints extends Component {
+  List<Point<double>> values;
+  WayPoints(this.values);
+}

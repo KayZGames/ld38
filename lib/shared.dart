@@ -13,6 +13,7 @@ const maxX = 40;
 const maxY = 40;
 const String cameraTag = 'camera';
 const String currentActionTag = 'currentAction';
+const String hqTag = 'HQ';
 const String temporaryRoadGroup = 'temporaryRoad';
 const double hexSize = pixelPerHeight / 2;
 const double pixelPerHeight = 148.0;

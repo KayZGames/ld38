@@ -14,16 +14,12 @@ class Game extends GameBase {
   Game() : super('ld38', '#game', 800, 600, bodyDefsName: null);
 
   void createEntities() {
-    addEntity([new Position(1, 1), new Slime()]);
-    addEntity([new Position(3, 1), new Slime()]);
-    addEntity([new Position(maxX - 2, maxY - 2), new Slime()]);
-    addEntity([new Position(maxX - 1, maxY - 2), new Slime()]);
-    addEntity([new Position(maxX - 1, maxY - 1), new Slime()]);
-
     var mapManager = world.getManager(MapManager) as MapManager;
-    mapManager.createBuilding(maxX ~/ 2, maxY ~/ 2, 'crashed_ship');
+    var hq = mapManager.createBuilding(maxX ~/ 2, maxY ~/ 2, 'crashed_ship');
     var gameStateManager =
         world.getManager(GameStateManager) as GameStateManager;
+    var tagManager = world.getManager(TagManager) as TagManager;
+    tagManager.register(hq, hqTag);
 
     gameStateManager.cameraX =
         ((maxX / 2 * pixelPerWidth * gameStateManager.zoom) - 800 / 2) /
@@ -38,6 +34,7 @@ class Game extends GameBase {
       GameBase.rendering: [
         new MouseInputSystem(canvas),
         new ActionTriggerSystem(),
+        new PatrolAction(),
         new CanvasCleaningSystem(canvas),
         new MapRenderingSystem(ctx, spriteSheet),
         new MousePositionHighlightingSystem(ctx),
@@ -52,6 +49,7 @@ class Game extends GameBase {
         new BuildRoadAbortSystem(),
         new BuildBuildingExecutionAction(),
         new FinalizeActionSystem(),
+        new WayPointVisitSystem(),
       ],
       GameBase.physics: [
         // add at least one
