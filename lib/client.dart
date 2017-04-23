@@ -37,14 +37,18 @@ class Game extends GameBase {
     return {
       GameBase.rendering: [
         new MouseInputSystem(canvas),
-        new CanvasCleaningSystem(canvas, fillStyle: 'black'),
+        new ActionTriggerSystem(),
+        new CanvasCleaningSystem(canvas),
         new MapRenderingSystem(ctx, spriteSheet),
         new MousePositionHighlightingSystem(ctx),
-        new RoadRenderingSystem(ctx, spriteSheet),
+        new RoadFragmentRenderingSystem(ctx, spriteSheet),
         new BuildingRenderingSystem(ctx, spriteSheet),
         new SlimeRenderingSystem(ctx),
-//        new DebugCoordRenderingSystem(ctx),
+        new DebugCoordRenderingSystem(ctx),
         new FpsRenderingSystem(ctx, fillStyle: 'white'),
+        new BuildRoadActionSystem(),
+        new BuildRoadExecutionSystem(),
+        new BuildRoadAbortSystem(),
       ],
       GameBase.physics: [
         // add at least one
@@ -56,5 +60,7 @@ class Game extends GameBase {
   onInit() {
     world.addManager(new GameStateManager());
     world.addManager(new MapManager());
+    world.addManager(new GroupManager());
+    world.addManager(new TagManager());
   }
 }

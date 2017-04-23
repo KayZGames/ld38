@@ -2,34 +2,37 @@ part of client;
 
 class MouseInputSystem extends VoidEntitySystem {
   CanvasElement canvas;
-  bool leftMousePressed = false;
   GameStateManager gsm;
+  Point<double> mousePos;
+  ActionTriggerSystem ats;
+  TagManager tagManager;
 
   MouseInputSystem(this.canvas);
 
   @override
   void initialize() {
-    canvas.onMouseDown.listen(_handleMouseDown);
     canvas.onMouseUp.listen(_handleMouseUp);
     canvas.onMouseMove.listen(_handleMouseMove);
     canvas.onMouseWheel.listen(_handleMouseWheel);
     canvas.onContextMenu.listen((event) => event.preventDefault());
+    window.onKeyUp.listen(_handleKeyUp);
   }
 
   @override
-  void processSystem() {}
+  void processSystem() {
+    gsm.selectedMapCoord = _convertPixelToMapCoord();
+  }
 
-  _handleMouseDown(MouseEvent event) {
-    event.preventDefault();
-    if (event.button == 0) {
-      leftMousePressed = true;
+  _handleKeyUp(KeyboardEvent event) {
+    if (event.keyCode == KeyCode.ESC) {
+      ats.abortAction = true;
     }
   }
 
   _handleMouseUp(MouseEvent event) {
     event.preventDefault();
     if (event.button == 0) {
-      leftMousePressed = false;
+      ats.triggerAction = true;
     }
   }
 
@@ -44,11 +47,53 @@ class MouseInputSystem extends VoidEntitySystem {
   _handleMouseMove(MouseEvent event) {
     // 1 == left button
     // 2 == right button
-    if (event.buttons & 3 != 0) {
+    if (event.buttons & 2 != 0) {
       gsm.cameraX = gsm.cameraX + -event.movement.x / gsm.zoom;
       gsm.cameraY = gsm.cameraY + -event.movement.y / gsm.zoom;
     }
-    gsm.mousePos = event.offset;
+    mousePos = event.offset;
+  }
+
+  @override
+  bool checkProcessing() => mousePos != null;
+
+  Point<int> _convertPixelToMapCoord() {
+    final x = gsm.cameraX + mousePos.x / gsm.zoom;
+    final y = gsm.cameraY + mousePos.y / gsm.zoom;
+    // Find the row and column of the box that the point falls in.
+    int row = (y ~/ verticalDistance);
+    int column;
+
+    bool rowIsOdd = row % 2 == 1;
+
+    // Is the row an odd number?
+    if (rowIsOdd) // Yes: Offset x to match the indent of the row
+      column = ((x + pixelPerWidth / 2) ~/ pixelPerWidth);
+    else // No: Calculate normally
+      column = (x ~/ pixelPerWidth);
+
+    double relY = y - (row * verticalDistance);
+    double relX;
+
+    if (rowIsOdd)
+      relX = (x - (column * pixelPerWidth)) + pixelPerWidth / 2;
+    else
+      relX = x - (column * pixelPerWidth);
+
+    var c = 0.25 * pixelPerHeight;
+    var m = c / (pixelPerWidth / 2);
+    // Work out if the point is above either of the hexagon's top edges
+    if (relY < (-m * relX) + c) {
+      // LEFT edge
+      row--;
+      if (rowIsOdd) column--;
+    } else if (relY < (m * relX) - c) {
+      // RIGHT edge
+      row--;
+      if (!rowIsOdd) column++;
+    }
+
+    return new Point(column, row);
   }
 
 }

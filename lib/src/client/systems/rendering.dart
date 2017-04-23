@@ -31,15 +31,15 @@ class SlimeRenderingSystem extends EntityProcessingSystem {
   }
 }
 
-class RoadRenderingSystem extends EntityProcessingSystem {
+class RoadFragmentRenderingSystem extends EntityProcessingSystem {
   GameStateManager gsm;
-  Mapper<Road> rm;
+  Mapper<RoadFragment> rm;
 
   CanvasRenderingContext2D ctx;
   SpriteSheet sheet;
 
-  RoadRenderingSystem(this.ctx, this.sheet)
-      : super(Aspect.getAspectForAllOf([Road]));
+  RoadFragmentRenderingSystem(this.ctx, this.sheet)
+      : super(Aspect.getAspectForAllOf([RoadFragment]));
 
   @override
   void processEntity(Entity entity) {
@@ -55,6 +55,7 @@ class RoadRenderingSystem extends EntityProcessingSystem {
       ..translate(-gsm.cameraX, -gsm.cameraY)
       ..translate(startX, startY)
       ..rotate(atan2(endY - startY, endX - startX))
+      ..globalAlpha = r.temp ? 0.4 : 1.0
       ..drawImageScaledFromSource(
           sheet.image,
           road.src.left,
@@ -142,6 +143,7 @@ class DebugCoordRenderingSystem extends VoidEntitySystem {
       for (int x = 0; x < map[y].length; x++) {
         var realX = convertX(x, y) + pixelPerWidth / 2;
         var realY = convertY(y) + pixelPerHeight / 2;
+
         bufferCtx.fillStyle = 'white';
         bufferCtx.fillText('$x:$y', realX, realY);
       }
@@ -214,11 +216,8 @@ class MousePositionHighlightingSystem extends VoidEntitySystem {
 
   @override
   void processSystem() {
-    var pixelX = gsm.cameraX + gsm.mousePos.x / gsm.zoom;
-    var pixelY = gsm.cameraY + gsm.mousePos.y / gsm.zoom;
-    var xyCoord = convertPixelToHex(pixelX, pixelY);
-    final x = convertX(xyCoord[0], xyCoord[1]);
-    final y = convertY(xyCoord[1]);
+    final x = convertX(gsm.selectedMapCoord.x, gsm.selectedMapCoord.y);
+    final y = convertY(gsm.selectedMapCoord.y);
     ctx
       ..save()
       ..scale(gsm.zoom, gsm.zoom)
@@ -238,5 +237,5 @@ class MousePositionHighlightingSystem extends VoidEntitySystem {
   }
 
   @override
-  bool checkProcessing() => gsm.mousePos != null;
+  bool checkProcessing() => gsm.selectedMapCoord != null;
 }

@@ -7,13 +7,22 @@ class Position extends Component {
 
 class Slime extends Component {}
 
-class Road extends Component {
+class RoadFragment extends Component {
   int startX, startY, endX, endY;
+  bool temp;
 
-  Road(this.startX, this.startY, this.endX, this.endY);
+  RoadFragment(this.startX, this.startY, this.endX, this.endY, {this.temp: false});
 }
 
 class Building extends Component {
   String id;
   Building(this.id);
 }
+
+class BuildRoadAction extends Component {
+  int startX, startY, endX, endY;
+  BuildRoadAction(this.startX, this.startY, this.endX, this.endY);
+}
+
+class AbortAction extends Component {}
+class ExecuteAction extends Component {}
