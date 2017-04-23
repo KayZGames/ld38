@@ -18,18 +18,23 @@ class MapManager extends Manager {
         .toList();
   }
 
+  TerrainTile getRoadSignTile(int x, int y) =>
+      getTile(y % 2 == 0 ? x + 1 : x, y + 1);
+
   void createBuilding(int x, int y, String buildingId) {
     world.createAndAddEntity([new Position(x, y), new Building(buildingId)]);
     getTile(x, y).building = buildingId;
     getTile(x, y).hasRoad = true;
     if (buildingId != 'road_sign') {
-      var roadSignX = y % 2 == 0 ? x + 1 : x;
-      world.createAndAddEntity([new RoadFragment(x, y, roadSignX, y + 1)]);
+      final roadSignTile = getRoadSignTile(x, y);
+      world.createAndAddEntity(
+          [new RoadFragment(x, y, roadSignTile.x, roadSignTile.y)]);
 
-      var roadSignTile = getTile(roadSignX, y + 1);
       if (roadSignTile.building == null) {
-        world.createAndAddEntity(
-            [new Position(roadSignX, y + 1), new Building('road_sign')]);
+        world.createAndAddEntity([
+          new Position(roadSignTile.x, roadSignTile.y),
+          new Building('road_sign')
+        ]);
         roadSignTile.building = 'road_sign';
         roadSignTile.hasRoad = true;
       } else if (roadSignTile.building != 'road_sign') {
@@ -44,8 +49,6 @@ class MapManager extends Manager {
     getTile(roadFragment.endX, roadFragment.endY).hasRoad = true;
   }
 }
-
-enum TileType { empty, water, carbon }
 
 class TerrainTile extends Object with Node {
   int x, y;

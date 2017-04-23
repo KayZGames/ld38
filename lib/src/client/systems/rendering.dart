@@ -268,3 +268,70 @@ class MousePositionHighlightingSystem extends VoidEntitySystem {
   @override
   bool checkProcessing() => gsm.selectedMapCoord != null;
 }
+
+class BuildingSelectionRenderingSystem extends EntityProcessingSystem {
+  Mapper<BuildBuildingAction> bbam;
+  GameStateManager gsm;
+  MapManager mapManager;
+  CanvasRenderingContext2D ctx;
+  SpriteSheet sheet;
+
+  BuildingSelectionRenderingSystem(this.ctx, this.sheet)
+      : super(Aspect.getAspectForAllOf([BuildBuildingAction]).exclude(
+            [ExecuteAction, AbortAction]));
+
+  @override
+  void processEntity(Entity entity) {
+    final action = bbam[entity];
+    final tile = mapManager.getTile(action.x, action.y);
+    final baseX = convertX(action.x, action.y) - gsm.cameraX;
+    final baseY = convertY(action.y) - gsm.cameraY;
+    var text = 'Please select a building';
+    BuildingType.buildingTypes
+        .where((buildingType) => buildingType.allowedTiles.contains(tile.type))
+        .forEach((buildingType) {
+      final x = (baseX + pixelPerWidth * buildingType.x) * gsm.zoom;
+      final y = (baseY + pixelPerHeight * buildingType.y) * gsm.zoom;
+      final radius = gsm.zoom * pixelPerWidth / 4;
+      final cursorInCircle =
+          (gsm.mousePos.distanceTo(new Point(x, y)) < radius);
+      final style = cursorInCircle ? 'green' : 'hsla(0, 0%, 80%, 0.8)';
+      if (cursorInCircle) {
+        text = buildingType.desciption;
+      }
+      final sprite = sheet.sprites[buildingType.type];
+
+      ctx
+        ..save()
+        ..beginPath()
+        ..lineWidth = 3
+        ..fillStyle = style
+        ..strokeStyle = 'black'
+        ..arc(x, y, radius, 0, 2 * PI)
+        ..closePath()
+        ..stroke()
+        ..fill()
+        ..drawImageScaledFromSource(
+            sheet.image,
+            sprite.src.left,
+            sprite.src.top,
+            sprite.src.width,
+            sprite.src.height,
+            x + sprite.dst.left * gsm.zoom * 0.5,
+            y + sprite.dst.top * gsm.zoom * 0.5,
+            sprite.dst.width * gsm.zoom * 0.5,
+            sprite.dst.height * gsm.zoom * 0.5)
+        ..restore();
+    });
+    ctx
+      ..save()
+      ..font = '18px Verdana'
+      ..textBaseline = 'bottom'
+      ..globalAlpha = 0.8
+      ..fillStyle = 'white';
+    final textWidth = ctx.measureText(text).width;
+    ctx
+      ..fillText(text, gsm.mousePos.x - textWidth / 2, gsm.mousePos.y)
+      ..restore();
+  }
+}

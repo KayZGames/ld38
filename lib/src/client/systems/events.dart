@@ -20,7 +20,10 @@ class MouseInputSystem extends VoidEntitySystem {
 
   @override
   void processSystem() {
-    gsm.selectedMapCoord = _convertPixelToMapCoord();
+    gsm.mousePos = mousePos;
+    if (!gsm.buildActionActive) {
+      gsm.selectedMapCoord = _convertPixelToMapCoord();
+    }
   }
 
   _handleKeyUp(KeyboardEvent event) {
@@ -95,5 +98,4 @@ class MouseInputSystem extends VoidEntitySystem {
 
     return new Point(column, row);
   }
-
 }

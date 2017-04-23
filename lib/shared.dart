@@ -23,3 +23,34 @@ num convertX(num x, int y) =>
     y % 2 == 0 ? x * pixelPerWidth : x * pixelPerWidth - 0.5 * pixelPerWidth;
 num convertY(num y) => y * verticalDistance;
 
+enum TileType { empty, water, carbon }
+
+class BuildingType {
+  static const List<BuildingType> buildingTypes = const [
+    const BuildingType(
+        0.0, 0.75, 'well', 'Produces water.', const [TileType.water]),
+    const BuildingType(
+        0.0, 0.25, 'mine', 'Produces carbon.', const [TileType.carbon]),
+    const BuildingType(0.5, 0.0, 'house', 'Increases the population limit.',
+        const [TileType.empty, TileType.carbon]),
+    const BuildingType(
+        1.0,
+        0.75,
+        'breeder',
+        'Breeds new slimes, 3 parent slimes required. Requires water.',
+        const [TileType.empty, TileType.carbon]),
+    const BuildingType(
+        1.0,
+        0.25,
+        'factory',
+        'Produces material to repair the spaceship. Requires carbon and water.',
+        const [TileType.empty, TileType.carbon]),
+  ];
+
+  final double x, y;
+  final String type;
+  final String desciption;
+  final List<TileType> allowedTiles;
+  const BuildingType(
+      this.x, this.y, this.type, this.desciption, this.allowedTiles);
+}

@@ -13,9 +13,21 @@ class ActionTriggerSystem extends VoidEntitySystem {
     final tile = mapManager.getTile(selectedCoord.x, selectedCoord.y);
     var currentAction = tagManager.getEntity(currentActionTag);
     if (currentAction == null) {
+      var action;
       if (tile.building == 'road_sign') {
-        var action = world.createAndAddEntity(
+        action = world.createAndAddEntity(
             [new BuildRoadAction(tile.x, tile.y, tile.x, tile.y)]);
+      } else if (tile.building == null) {
+        final roadSignTile = mapManager.getRoadSignTile(tile.x, tile.y);
+        if (roadSignTile.type != TileType.water &&
+            (roadSignTile.building == null ||
+                roadSignTile.building == 'road_sign')) {
+          action = world
+              .createAndAddEntity([new BuildBuildingAction(tile.x, tile.y)]);
+          gsm.buildActionActive = true;
+        }
+      }
+      if (action != null) {
         tagManager.register(action, currentActionTag);
       }
     } else if (abortAction) {
@@ -51,34 +63,36 @@ class BuildRoadActionSystem extends EntityProcessingSystem {
   void processEntity(Entity entity) {
     final action = bram[entity];
 
-    action.endX = gsm.selectedMapCoord.x;
-    action.endY = gsm.selectedMapCoord.y;
+    if (gsm.selectedMapCoord.x != action.endX || gsm.selectedMapCoord.y != action.endY) {
+      action.endX = gsm.selectedMapCoord.x;
+      action.endY = gsm.selectedMapCoord.y;
 
-    final path = mapManager.findPath(action);
-    final oldRoad = gm.getEntities(temporaryRoadGroup);
-    if (oldRoad != null) {
-      oldRoad.forEach((roadFragment) => roadFragment.deleteFromWorld());
-    }
-    if (path.length > 1) {
-      for (int i = 0; i < path.length - 1; i++) {
-        TerrainTile roadStart;
-        TerrainTile roadEnd;
-        if (path[i].y < path[i + 1].y || path[i].x < path[i + 1].x) {
-          roadStart = path[i];
-          roadEnd = path[i + 1];
-        } else {
-          roadStart = path[i + 1];
-          roadEnd = path[i];
-        }
-        var e = world.createAndAddEntity([
-          new RoadFragment(roadStart.x, roadStart.y, roadEnd.x, roadEnd.y,
-              temp: true)
-        ]);
-        gm.add(e, temporaryRoadGroup);
+      final path = mapManager.findPath(action);
+      final oldRoad = gm.getEntities(temporaryRoadGroup);
+      if (oldRoad != null) {
+        oldRoad.forEach((roadFragment) => roadFragment.deleteFromWorld());
       }
-      gsm.validAction = true;
-    } else {
-      gsm.validAction = false;
+      if (path.length > 1) {
+        for (int i = 0; i < path.length - 1; i++) {
+          TerrainTile roadStart;
+          TerrainTile roadEnd;
+          if (path[i].y < path[i + 1].y || path[i].x < path[i + 1].x) {
+            roadStart = path[i];
+            roadEnd = path[i + 1];
+          } else {
+            roadStart = path[i + 1];
+            roadEnd = path[i];
+          }
+          var e = world.createAndAddEntity([
+            new RoadFragment(roadStart.x, roadStart.y, roadEnd.x, roadEnd.y,
+                temp: true)
+          ]);
+          gm.add(e, temporaryRoadGroup);
+        }
+        gsm.validAction = true;
+      } else {
+        gsm.validAction = false;
+      }
     }
   }
 }
@@ -90,7 +104,6 @@ class BuildRoadAbortSystem extends EntityProcessingSystem {
 
   @override
   void processEntity(Entity entity) {
-    entity.deleteFromWorld();
     final oldRoad = gm.getEntities(temporaryRoadGroup);
     if (oldRoad != null) {
       oldRoad.forEach((roadFragment) => roadFragment.deleteFromWorld());
@@ -110,7 +123,6 @@ class BuildRoadExecutionSystem extends EntityProcessingSystem {
 
   @override
   void processEntity(Entity entity) {
-    entity.deleteFromWorld();
     final newRoad = gm.getEntities(temporaryRoadGroup);
     if (newRoad.length > 0) {
       newRoad.forEach((fragment) {
@@ -120,6 +132,47 @@ class BuildRoadExecutionSystem extends EntityProcessingSystem {
       });
       mapManager.createBuilding(
           gsm.selectedMapCoord.x, gsm.selectedMapCoord.y, 'road_sign');
+    }
+  }
+}
+
+class FinalizeActionSystem extends EntityProcessingSystem {
+  GameStateManager gsm;
+  FinalizeActionSystem()
+      : super(Aspect.getAspectForOneOf([ExecuteAction, AbortAction]));
+
+  @override
+  void processEntity(Entity entity) {
+    entity.deleteFromWorld();
+    gsm.validAction = null;
+    gsm.buildActionActive = false;
+  }
+}
+
+class BuildBuildingExecutionAction extends EntityProcessingSystem {
+  Mapper<BuildBuildingAction> bbam;
+  MapManager mapManager;
+  GameStateManager gsm;
+
+  BuildBuildingExecutionAction()
+      : super(Aspect.getAspectForAllOf([BuildBuildingAction, ExecuteAction]));
+
+  @override
+  void processEntity(Entity entity) {
+    final action = bbam[entity];
+    final tile = mapManager.getTile(action.x, action.y);
+    final baseX = convertX(action.x, action.y) - gsm.cameraX;
+    final baseY = convertY(action.y) - gsm.cameraY;
+    var buildingToBuild = BuildingType.buildingTypes
+        .where((buildingType) => buildingType.allowedTiles.contains(tile.type))
+        .firstWhere((buildingType) {
+      final x = (baseX + pixelPerWidth * buildingType.x) * gsm.zoom;
+      final y = (baseY + pixelPerHeight * buildingType.y) * gsm.zoom;
+      final radius = gsm.zoom * pixelPerWidth / 4;
+      return gsm.mousePos.distanceTo(new Point(x, y)) < radius;
+    }, orElse: null);
+    if (buildingToBuild != null) {
+      mapManager.createBuilding(action.x, action.y, buildingToBuild.type);
     }
   }
 }

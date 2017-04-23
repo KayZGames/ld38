@@ -44,11 +44,14 @@ class Game extends GameBase {
         new RoadFragmentRenderingSystem(ctx, spriteSheet),
         new BuildingRenderingSystem(ctx, spriteSheet),
         new SlimeRenderingSystem(ctx),
-        new DebugCoordRenderingSystem(ctx),
+        new BuildingSelectionRenderingSystem(ctx, spriteSheet),
+//        new DebugCoordRenderingSystem(ctx),
         new FpsRenderingSystem(ctx, fillStyle: 'white'),
         new BuildRoadActionSystem(),
         new BuildRoadExecutionSystem(),
         new BuildRoadAbortSystem(),
+        new BuildBuildingExecutionAction(),
+        new FinalizeActionSystem(),
       ],
       GameBase.physics: [
         // add at least one

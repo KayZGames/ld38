@@ -11,7 +11,8 @@ class RoadFragment extends Component {
   int startX, startY, endX, endY;
   bool temp;
 
-  RoadFragment(this.startX, this.startY, this.endX, this.endY, {this.temp: false});
+  RoadFragment(this.startX, this.startY, this.endX, this.endY,
+      {this.temp: false});
 }
 
 class Building extends Component {
@@ -24,5 +25,11 @@ class BuildRoadAction extends Component {
   BuildRoadAction(this.startX, this.startY, this.endX, this.endY);
 }
 
+class BuildBuildingAction extends Component {
+  int x, y;
+  BuildBuildingAction(this.x, this.y);
+}
+
 class AbortAction extends Component {}
+
 class ExecuteAction extends Component {}
