@@ -11,7 +11,7 @@ part 'src/client/systems/events.dart';
 part 'src/client/systems/rendering.dart';
 
 class Game extends GameBase {
-  Game() : super('ld38', '#game', 800, 600, bodyDefsName: null);
+  Game() : super('ld38', '#game', 1024, 768, bodyDefsName: null);
 
   void createEntities() {
     var mapManager = world.getManager(MapManager) as MapManager;
@@ -22,10 +22,10 @@ class Game extends GameBase {
     tagManager.register(hq, hqTag);
 
     gameStateManager.cameraX =
-        ((maxX / 2 * pixelPerWidth * gameStateManager.zoom) - 800 / 2) /
+        ((maxX / 2 * pixelPerWidth * gameStateManager.zoom) - 1024 / 2) /
             gameStateManager.zoom + pixelPerWidth/2;
     gameStateManager.cameraY =
-        ((maxY / 2 * verticalDistance * gameStateManager.zoom) - 600 / 2) /
+        ((maxY / 2 * verticalDistance * gameStateManager.zoom) - 768 / 2) /
             gameStateManager.zoom + pixelPerHeight/2;
   }
 

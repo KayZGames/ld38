@@ -43,8 +43,8 @@ class MouseInputSystem extends VoidEntitySystem {
     event.preventDefault();
     final oldZoom = gsm.zoom;
     gsm.zoom = min(2.0, max(0.5, gsm.zoom - event.deltaY / 1000));
-    gsm.cameraX += (800 / oldZoom - 800 / gsm.zoom) / 2;
-    gsm.cameraY += (600 / oldZoom - 600 / gsm.zoom) / 2;
+    gsm.cameraX += (1024 / oldZoom - 1024 / gsm.zoom) / 2;
+    gsm.cameraY += (768 / oldZoom - 768 / gsm.zoom) / 2;
   }
 
   _handleMouseMove(MouseEvent event) {

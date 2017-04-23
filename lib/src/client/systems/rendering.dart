@@ -131,7 +131,7 @@ class MapRenderingSystem extends VoidEntitySystem {
   @override
   void processSystem() {
     ctx.drawImageScaledFromSource(buffer, gsm.cameraX, gsm.cameraY,
-        800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
+        1024 / gsm.zoom, 768 / gsm.zoom, 0, 0, 1024, 768);
   }
 }
 
@@ -165,7 +165,7 @@ class DebugCoordRenderingSystem extends VoidEntitySystem {
   @override
   void processSystem() {
     ctx.drawImageScaledFromSource(buffer, gsm.cameraX, gsm.cameraY,
-        800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
+        1024 / gsm.zoom, 768 / gsm.zoom, 0, 0, 1024, 768);
 
     ctx
       ..save()
@@ -173,12 +173,12 @@ class DebugCoordRenderingSystem extends VoidEntitySystem {
       ..lineWidth = 3
       ..beginPath()
       ..moveTo(400, 0)
-      ..lineTo(400, 600)
+      ..lineTo(400, 768)
       ..closePath()
       ..stroke()
       ..beginPath()
       ..moveTo(0, 300)
-      ..lineTo(800, 300)
+      ..lineTo(1024, 300)
       ..closePath()
       ..stroke()
       ..restore();

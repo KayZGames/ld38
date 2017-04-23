@@ -11,7 +11,7 @@ class GameStateManager extends Manager {
   num get cameraY => _cameraY;
 
   set cameraX(num value) =>
-      _cameraX = min(((maxX - 1) * pixelPerWidth * zoom - 800) / zoom, max(0, value));
+      _cameraX = min(((maxX - 1) * pixelPerWidth * zoom - 1024) / zoom, max(0, value));
   set cameraY(num value) =>
-      _cameraY = min(((maxY - 1) * verticalDistance * zoom - 600) / zoom, max(0, value));
+      _cameraY = min(((maxY - 1) * verticalDistance * zoom - 768) / zoom, max(0, value));
 }
