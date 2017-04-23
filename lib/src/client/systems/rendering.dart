@@ -14,8 +14,8 @@ class SlimeRenderingSystem extends EntityProcessingSystem {
 
     ctx
       ..save()
-      ..translate(-gsm.cameraX, -gsm.cameraY)
       ..scale(gsm.zoom, gsm.zoom)
+      ..translate(-gsm.cameraX, -gsm.cameraY)
       ..translate(convertX(p.x, p.y), convertY(p.y))
       ..fillStyle = 'blue'
       ..beginPath()
@@ -51,8 +51,8 @@ class RoadRenderingSystem extends EntityProcessingSystem {
     final road = sheet.sprites['road'];
     ctx
       ..save()
-      ..translate(-gsm.cameraX, -gsm.cameraY)
       ..scale(gsm.zoom, gsm.zoom)
+      ..translate(-gsm.cameraX, -gsm.cameraY)
       ..translate(startX, startY)
       ..rotate(atan2(endY - startY, endX - startX))
       ..drawImageScaledFromSource(
@@ -117,8 +117,8 @@ class MapRenderingSystem extends VoidEntitySystem {
 
   @override
   void processSystem() {
-    ctx.drawImageScaledFromSource(buffer, gsm.cameraX / gsm.zoom,
-        gsm.cameraY / gsm.zoom, 800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
+    ctx.drawImageScaledFromSource(buffer, gsm.cameraX,
+        gsm.cameraY, 800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
   }
 }
 
@@ -150,8 +150,24 @@ class DebugCoordRenderingSystem extends VoidEntitySystem {
 
   @override
   void processSystem() {
-    ctx.drawImageScaledFromSource(buffer, gsm.cameraX / gsm.zoom,
-        gsm.cameraY / gsm.zoom, 800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
+    ctx.drawImageScaledFromSource(buffer, gsm.cameraX,
+        gsm.cameraY, 800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
+
+    ctx
+      ..save()
+      ..strokeStyle = 'black'
+      ..lineWidth = 3
+      ..beginPath()
+      ..moveTo(400, 0)
+      ..lineTo(400, 600)
+      ..closePath()
+      ..stroke()
+      ..beginPath()
+      ..moveTo(0, 300)
+      ..lineTo(800, 300)
+      ..closePath()
+      ..stroke()
+      ..restore();
   }
 }
 
@@ -173,8 +189,8 @@ class BuildingRenderingSystem extends EntityProcessingSystem {
 
     ctx
       ..save()
-      ..translate(-gsm.cameraX, -gsm.cameraY)
       ..scale(gsm.zoom, gsm.zoom)
+      ..translate(-gsm.cameraX, -gsm.cameraY)
       ..translate(convertX(p.x, p.y), convertY(p.y))
       ..drawImageScaledFromSource(
           sheet.image,

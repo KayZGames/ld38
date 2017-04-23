@@ -1,6 +1,5 @@
 part of client;
 
-
 class MouseInputSystem extends VoidEntitySystem {
   CanvasElement canvas;
   bool leftMousePressed = false;
@@ -13,26 +12,36 @@ class MouseInputSystem extends VoidEntitySystem {
     canvas.onMouseDown.listen(_handleMouseDown);
     canvas.onMouseUp.listen(_handleMouseUp);
     canvas.onMouseMove.listen(_handleMouseMove);
+    canvas.onMouseWheel.listen(_handleMouseWheel);
   }
 
   @override
-  void processSystem() {
-  }
+  void processSystem() {}
 
   _handleMouseDown(MouseEvent event) {
     if (event.button == 0) {
       leftMousePressed = true;
     }
   }
+
   _handleMouseUp(MouseEvent event) {
     if (event.button == 0) {
       leftMousePressed = false;
     }
   }
+
+  _handleMouseWheel(WheelEvent event) {
+    event.preventDefault();
+    final oldZoom = gsm.zoom;
+    gsm.zoom = min(2.0, max(0.5, gsm.zoom - event.deltaY / 1000));
+    gsm.cameraX += (800 / oldZoom - 800 / gsm.zoom) / 2;
+    gsm.cameraY += (600 / oldZoom - 600 / gsm.zoom) / 2;
+  }
+
   _handleMouseMove(MouseEvent event) {
     if (event.buttons == 1) {
-      gsm.cameraX = min((maxX - 1.01) * pixelPerWidth - 800, max(0, gsm.cameraX + -event.movement.x));
-      gsm.cameraY = min((maxY - 1) * verticalDistance - 600, max(0, gsm.cameraY + -event.movement.y));
+      gsm.cameraX = gsm.cameraX + -event.movement.x;
+      gsm.cameraY = gsm.cameraY + -event.movement.y;
     }
   }
 }
