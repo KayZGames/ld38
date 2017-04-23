@@ -40,8 +40,8 @@ class MouseInputSystem extends VoidEntitySystem {
 
   _handleMouseMove(MouseEvent event) {
     if (event.buttons == 1) {
-      gsm.cameraX = gsm.cameraX + -event.movement.x;
-      gsm.cameraY = gsm.cameraY + -event.movement.y;
+      gsm.cameraX = gsm.cameraX + -event.movement.x / gsm.zoom;
+      gsm.cameraY = gsm.cameraY + -event.movement.y / gsm.zoom;
     }
   }
 }

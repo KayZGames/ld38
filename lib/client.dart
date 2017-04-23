@@ -24,7 +24,6 @@ class Game extends GameBase {
     mapManager.createBuilding(maxX ~/ 2, maxY ~/ 2, 'crashed_ship');
     var gameStateManager =
         world.getManager(GameStateManager) as GameStateManager;
-    gameStateManager.zoom = 2.0;
     gameStateManager.cameraX =
         ((maxX / 2 * pixelPerWidth * gameStateManager.zoom) - 800 / 2) /
             gameStateManager.zoom;
