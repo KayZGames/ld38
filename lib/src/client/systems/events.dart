@@ -41,7 +41,6 @@ class MouseInputSystem extends VoidEntitySystem {
 
   _handleMouseWheel(WheelEvent event) {
     event.preventDefault();
-    print(event.deltaMode);
     final oldZoom = gsm.zoom;
     var deltaY = event.deltaY;
     if (event.deltaMode == WheelEvent.DOM_DELTA_PIXEL) {

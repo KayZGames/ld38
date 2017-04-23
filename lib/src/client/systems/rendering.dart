@@ -39,6 +39,13 @@ class SlimeRenderingSystem extends EntityProcessingSystem {
           -15 * squeezeFactor, 0, -20 * squeezeFactor)
       ..closePath()
       ..fill()
+      ..fillStyle = 'hsla(${(s.hue + 120)%360},40%,60%,1.0)'
+      ..beginPath()
+      ..ellipse(-3 / squeezeFactor, -10 * squeezeFactor, 2 / squeezeFactor, 2 * squeezeFactor, 0, 0, 2 * PI, false)
+      ..fill()
+      ..ellipse(3 / squeezeFactor, -10 * squeezeFactor, 2 / squeezeFactor, 2 * squeezeFactor, 0, 0, 2 * PI, false)
+      ..fill()
+      ..closePath()
       ..restore();
   }
 }
