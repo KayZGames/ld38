@@ -9,7 +9,10 @@ class PixelPosition extends Component {
   PixelPosition(this.x, this.y);
 }
 
-class Slime extends Component {}
+class Slime extends Component {
+  int hue;
+  Slime(this.hue);
+}
 
 class Age extends Component {
   double birthTime;

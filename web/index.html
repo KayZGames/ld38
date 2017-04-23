@@ -1,15 +1,50 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>ld38</title>
-    <link type="text/css" rel="stylesheet" href="ld38.css">
-  </head>
-  <body>
-    <div id="gamecontainer">
-      <canvas id="game" width="1024px" height="768px"></canvas>
-    </div>
-    <script type="application/dart" src="ld38.dart"></script>
-    <script src="packages/browser/dart.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>LD38 - Panic on Slimotron</title>
+  <link type="text/css" rel="stylesheet" href="ld38.css">
+</head>
+<body>
+<div id="gamecontainer">
+  <canvas id="game" width="1024px" height="768px"></canvas>
+</div>
+<div class="notes">
+  <h3>Note: The game is incomplete. I wanted to add much more.</h3>
+  <h4>Controls</h4>
+  <ul>
+    <li>Use left mouse button to execute actions</li>
+    <li>Use right mouse button to navigate</li>
+    <li>Use mouse wheel to zoom</li>
+    <li>Left click on a free tile to build a building; bottem right of the tile needs to be a free space or a road; some
+      buildings are only allowed on special terrain
+    </li>
+    <li>Left click on a tile with a road sign to start building a road</li>
+  </ul>
+  <h4>Missing features:</h4>
+  <ul>
+    <li>Story: Game should have started with the spaceship intact, and someone causing a crash. After repairing the
+      spaceship, the same thing happens but they end up on a smaller world. The game would end when the slimes arrive at
+      a really small world, where you can't really build anything.
+    </li>
+    <li>Resource management - buildings cost resource, buildings produce resources and slimes move them from one
+      crossroad to the next
+    </li>
+    <li>Breeding - 3 slimes would breed and produce offspring, color would change depending on parents colors with some
+      mutations
+    </li>
+    <li>Roads should take the color of the slime, if it's used often</li>
+  </ul>
+  <h4>Known bugs</h4>
+  <ul>
+    <li>Slimes can move from one road/building to another road, even if they aren't directly connected</li>
+    <li>2 crossroads can be connected using multiple roads, slimes will only occupy the shortest road</li>
+    <li>building something next to a road will add a road sign, but the separated roads don't get recognized by the
+      slimes
+    </li>
+  </ul>
+</div>
+<script type="application/dart" src="ld38.dart"></script>
+<script src="packages/browser/dart.js"></script>
+</body>
 </html>

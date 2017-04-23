@@ -25,7 +25,7 @@ class SlimeRenderingSystem extends EntityProcessingSystem {
       ..scale(gsm.zoom, gsm.zoom)
       ..translate(-gsm.cameraX, -gsm.cameraY)
       ..translate(p.x, p.y - jumpHeight)
-      ..fillStyle = 'blue'
+      ..fillStyle = 'hsla(${s.hue},70%,40%,0.95)'
       ..beginPath()
       ..moveTo(0, 0)
       ..bezierCurveTo(5 / squeezeFactor, 0, 10 / squeezeFactor, 0,

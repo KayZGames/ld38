@@ -1,5 +1,6 @@
 body {
   text-align: center;
+  background-color: darkgray;
 }
 
 #gamecontainer {
@@ -8,6 +9,12 @@ body {
   width: 1024px;
   height: 768px;
   margin: auto;
+}
+
+.notes {
+  width: 1024px;
+  margin: auto;
+  text-align: left;
 }
 
 canvas {

@@ -138,7 +138,7 @@ class BuildRoadExecutionSystem extends EntityProcessingSystem {
       mapManager.createBuilding(action.endX, action.endY, 'road_sign');
       final hqPos = pm[tm.getEntity(hqTag)];
       world.createAndAddEntity([
-        new Slime(),
+        new Slime([0, 120, 240][random.nextInt(3)]),
         new Age(world.time()),
         new GridPosition(hqPos.x, hqPos.y),
         new Patrol(action.startX, action.startY, action.endX, action.endY)
@@ -246,7 +246,7 @@ class WayPointVisitSystem extends EntityProcessingSystem {
     final angle = atan2(diffY, diffX);
 
     final age = world.time() - a.birthTime;
-    final moveDistance = max(0.0, sin(age * 5) + 0.2) * world.delta * 20;
+    final moveDistance = max(0.0, sin(age * 5) + 0.2) * world.delta * 50;
 
     pos.x -= diffX.sign * min(diffX.abs(), moveDistance * cos(angle).abs());
     pos.y -= diffY.sign * min(diffY.abs(), moveDistance * sin(angle).abs());
