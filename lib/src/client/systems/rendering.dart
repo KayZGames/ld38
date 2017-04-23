@@ -95,8 +95,8 @@ class MapRenderingSystem extends VoidEntitySystem {
   @override
   void initialize() {
     buffer = new CanvasElement(
-        width: (100 * pixelPerWidth).ceil(),
-        height: (100 * pixelPerHeight).ceil());
+        width: (maxX * pixelPerWidth).ceil(),
+        height: (maxY * verticalDistance).ceil());
     bufferCtx = buffer.context2D;
     final map = mapManager.map.map;
     for (int y = 0; y < map.length; y++) {

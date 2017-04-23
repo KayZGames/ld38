@@ -17,7 +17,7 @@ class ActionTriggerSystem extends VoidEntitySystem {
       if (tile.building == 'road_sign') {
         action = world.createAndAddEntity(
             [new BuildRoadAction(tile.x, tile.y, tile.x, tile.y)]);
-      } else if (tile.building == null) {
+      } else if (tile.building == null && !tile.hasRoad) {
         final roadSignTile = mapManager.getRoadSignTile(tile.x, tile.y);
         if (roadSignTile.type != TileType.water &&
             (roadSignTile.building == null ||
