@@ -1,0 +1,132 @@
+{"frames": {
+
+"breeder":
+{
+	"frame": {"x":384,"y":226,"w":120,"h":124},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":15,"w":120,"h":124},
+	"sourceSize": {"w":130,"h":148}
+},
+"carbon":
+{
+	"frame": {"x":130,"y":296,"w":130,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
+	"sourceSize": {"w":130,"h":148}
+},
+"crashed_ship":
+{
+	"frame": {"x":260,"y":334,"w":102,"h":74},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":28,"y":25,"w":102,"h":74},
+	"sourceSize": {"w":130,"h":148}
+},
+"factory":
+{
+	"frame": {"x":260,"y":248,"w":116,"h":86},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":5,"w":116,"h":86},
+	"sourceSize": {"w":130,"h":148}
+},
+"grass-0":
+{
+	"frame": {"x":130,"y":148,"w":130,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
+	"sourceSize": {"w":130,"h":148}
+},
+"grass-1":
+{
+	"frame": {"x":296,"y":0,"w":130,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
+	"sourceSize": {"w":130,"h":148}
+},
+"grass-2":
+{
+	"frame": {"x":166,"y":0,"w":130,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
+	"sourceSize": {"w":130,"h":148}
+},
+"grass-3":
+{
+	"frame": {"x":0,"y":298,"w":130,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
+	"sourceSize": {"w":130,"h":148}
+},
+"hexagon":
+{
+	"frame": {"x":0,"y":0,"w":130,"h":150},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":150},
+	"sourceSize": {"w":130,"h":150}
+},
+"house":
+{
+	"frame": {"x":260,"y":408,"w":96,"h":88},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":14,"y":16,"w":96,"h":88},
+	"sourceSize": {"w":130,"h":148}
+},
+"mine":
+{
+	"frame": {"x":384,"y":148,"w":124,"h":78},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":16,"w":124,"h":78},
+	"sourceSize": {"w":130,"h":148}
+},
+"road":
+{
+	"frame": {"x":36,"y":446,"w":130,"h":16},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":130,"h":16},
+	"sourceSize": {"w":130,"h":20}
+},
+"road_sign":
+{
+	"frame": {"x":0,"y":446,"w":36,"h":58},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":46,"y":19,"w":36,"h":58},
+	"sourceSize": {"w":130,"h":148}
+},
+"water":
+{
+	"frame": {"x":0,"y":150,"w":130,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":148},
+	"sourceSize": {"w":130,"h":148}
+},
+"well":
+{
+	"frame": {"x":260,"y":148,"w":124,"h":100},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":19,"w":124,"h":100},
+	"sourceSize": {"w":130,"h":148}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker ",
+	"version": "1.0",
+	"image": "assets.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":512},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:150f1fc93e1a92c14f5ced01a78c1235:9cb7b8444e2daff2aed2575a92a2a899:a759b6bbc8381ac9c472b28f589ad0d6$"
+}
+}
