@@ -44,10 +44,10 @@ class RoadRenderingSystem extends EntityProcessingSystem {
   @override
   void processEntity(Entity entity) {
     final r = rm[entity];
-    final startX = convertX(r.startX, r.startY);
-    final endX = convertX(r.endX, r.endY);
-    final startY = convertY(r.startY);
-    final endY = convertY(r.endY);
+    final startX = convertX(r.startX, r.startY) + pixelPerWidth / 2;
+    final endX = convertX(r.endX, r.endY) + pixelPerWidth / 2;
+    final startY = convertY(r.startY) + pixelPerHeight / 2;
+    final endY = convertY(r.endY) + pixelPerHeight / 2;
     final road = sheet.sprites['road'];
     ctx
       ..save()
@@ -99,8 +99,8 @@ class MapRenderingSystem extends VoidEntitySystem {
           default:
             sprite = sheet.sprites['grass-${random.nextInt(4)}'];
         }
-        var realX = convertX(x, y) - pixelPerWidth * 0.5;
-        var realY = convertY(y) - pixelPerHeight * 0.5;
+        var realX = convertX(x, y);
+        var realY = convertY(y);
         bufferCtx.drawImageScaledFromSource(
             sheet.image,
             sprite.src.left + 1,
@@ -117,8 +117,8 @@ class MapRenderingSystem extends VoidEntitySystem {
 
   @override
   void processSystem() {
-    ctx.drawImageScaledFromSource(buffer, gsm.cameraX,
-        gsm.cameraY, 800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
+    ctx.drawImageScaledFromSource(buffer, gsm.cameraX, gsm.cameraY,
+        800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
   }
 }
 
@@ -140,8 +140,8 @@ class DebugCoordRenderingSystem extends VoidEntitySystem {
     final map = mapManager.map.map;
     for (int y = 0; y < map.length; y++) {
       for (int x = 0; x < map[y].length; x++) {
-        var realX = convertX(x, y);
-        var realY = convertY(y);
+        var realX = convertX(x, y) + pixelPerWidth / 2;
+        var realY = convertY(y) + pixelPerHeight / 2;
         bufferCtx.fillStyle = 'white';
         bufferCtx.fillText('$x:$y', realX, realY);
       }
@@ -150,8 +150,8 @@ class DebugCoordRenderingSystem extends VoidEntitySystem {
 
   @override
   void processSystem() {
-    ctx.drawImageScaledFromSource(buffer, gsm.cameraX,
-        gsm.cameraY, 800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
+    ctx.drawImageScaledFromSource(buffer, gsm.cameraX, gsm.cameraY,
+        800 / gsm.zoom, 600 / gsm.zoom, 0, 0, 800, 600);
 
     ctx
       ..save()
@@ -198,10 +198,45 @@ class BuildingRenderingSystem extends EntityProcessingSystem {
           sprite.src.top,
           sprite.src.width,
           sprite.src.height,
-          sprite.dst.left,
-          sprite.dst.top,
+          sprite.dst.left + pixelPerWidth / 2,
+          sprite.dst.top + pixelPerHeight / 2,
           sprite.dst.width,
           sprite.dst.height)
       ..restore();
   }
+}
+
+class MousePositionHighlightingSystem extends VoidEntitySystem {
+  GameStateManager gsm;
+  CanvasRenderingContext2D ctx;
+
+  MousePositionHighlightingSystem(this.ctx);
+
+  @override
+  void processSystem() {
+    var pixelX = gsm.cameraX + gsm.mousePos.x / gsm.zoom;
+    var pixelY = gsm.cameraY + gsm.mousePos.y / gsm.zoom;
+    var xyCoord = convertPixelToHex(pixelX, pixelY);
+    final x = convertX(xyCoord[0], xyCoord[1]);
+    final y = convertY(xyCoord[1]);
+    ctx
+      ..save()
+      ..scale(gsm.zoom, gsm.zoom)
+      ..translate(-gsm.cameraX, -gsm.cameraY)
+      ..translate(x, y)
+      ..fillStyle = 'hsla(0,0%,100%, 0.15)'
+      ..beginPath()
+      ..moveTo(pixelPerWidth / 2, 0)
+      ..lineTo(pixelPerWidth, pixelPerHeight * 0.25)
+      ..lineTo(pixelPerWidth, pixelPerHeight * 0.75)
+      ..lineTo(pixelPerWidth / 2, pixelPerHeight)
+      ..lineTo(0, pixelPerHeight * 0.75)
+      ..lineTo(0, pixelPerHeight * 0.25)
+      ..closePath()
+      ..fill()
+      ..restore();
+  }
+
+  @override
+  bool checkProcessing() => gsm.mousePos != null;
 }

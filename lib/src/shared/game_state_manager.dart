@@ -2,6 +2,7 @@ part of shared;
 
 class GameStateManager extends Manager {
   num _cameraX = 0, _cameraY = 0, zoom = 0.7;
+  Point mousePos;
 
   num get cameraX => _cameraX;
   num get cameraY => _cameraY;

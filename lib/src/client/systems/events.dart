@@ -13,18 +13,21 @@ class MouseInputSystem extends VoidEntitySystem {
     canvas.onMouseUp.listen(_handleMouseUp);
     canvas.onMouseMove.listen(_handleMouseMove);
     canvas.onMouseWheel.listen(_handleMouseWheel);
+    canvas.onContextMenu.listen((event) => event.preventDefault());
   }
 
   @override
   void processSystem() {}
 
   _handleMouseDown(MouseEvent event) {
+    event.preventDefault();
     if (event.button == 0) {
       leftMousePressed = true;
     }
   }
 
   _handleMouseUp(MouseEvent event) {
+    event.preventDefault();
     if (event.button == 0) {
       leftMousePressed = false;
     }
@@ -39,9 +42,13 @@ class MouseInputSystem extends VoidEntitySystem {
   }
 
   _handleMouseMove(MouseEvent event) {
-    if (event.buttons == 1) {
+    // 1 == left button
+    // 2 == right button
+    if (event.buttons & 3 != 0) {
       gsm.cameraX = gsm.cameraX + -event.movement.x / gsm.zoom;
       gsm.cameraY = gsm.cameraY + -event.movement.y / gsm.zoom;
     }
+    gsm.mousePos = event.offset;
   }
+
 }

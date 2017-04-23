@@ -24,12 +24,13 @@ class Game extends GameBase {
     mapManager.createBuilding(maxX ~/ 2, maxY ~/ 2, 'crashed_ship');
     var gameStateManager =
         world.getManager(GameStateManager) as GameStateManager;
+
     gameStateManager.cameraX =
         ((maxX / 2 * pixelPerWidth * gameStateManager.zoom) - 800 / 2) /
-            gameStateManager.zoom;
+            gameStateManager.zoom + pixelPerWidth/2;
     gameStateManager.cameraY =
         ((maxY / 2 * verticalDistance * gameStateManager.zoom) - 600 / 2) /
-            gameStateManager.zoom;
+            gameStateManager.zoom + pixelPerHeight/2;
   }
 
   Map<int, List<EntitySystem>> getSystems() {
@@ -38,6 +39,7 @@ class Game extends GameBase {
         new MouseInputSystem(canvas),
         new CanvasCleaningSystem(canvas, fillStyle: 'black'),
         new MapRenderingSystem(ctx, spriteSheet),
+        new MousePositionHighlightingSystem(ctx),
         new RoadRenderingSystem(ctx, spriteSheet),
         new BuildingRenderingSystem(ctx, spriteSheet),
         new SlimeRenderingSystem(ctx),
