@@ -211,6 +211,7 @@ class BuildingRenderingSystem extends EntityProcessingSystem {
 class MousePositionHighlightingSystem extends VoidEntitySystem {
   GameStateManager gsm;
   CanvasRenderingContext2D ctx;
+  TagManager tm;
 
   MousePositionHighlightingSystem(this.ctx);
 
@@ -218,12 +219,18 @@ class MousePositionHighlightingSystem extends VoidEntitySystem {
   void processSystem() {
     final x = convertX(gsm.selectedMapCoord.x, gsm.selectedMapCoord.y);
     final y = convertY(gsm.selectedMapCoord.y);
+    final hasCurrentAction =
+        tm.isRegistered(currentActionTag) && gsm.validAction != null;
+    final hue = hasCurrentAction ? gsm.validAction ? 100 : 0 : 0;
+    final saturation = hasCurrentAction ? 50 : 0;
+    final lightness = hasCurrentAction ? 50 : 100;
+    final alpha = hasCurrentAction ? 0.4 : 0.15;
     ctx
       ..save()
       ..scale(gsm.zoom, gsm.zoom)
       ..translate(-gsm.cameraX, -gsm.cameraY)
       ..translate(x, y)
-      ..fillStyle = 'hsla(0,0%,100%, 0.15)'
+      ..fillStyle = 'hsla($hue,$saturation%,$lightness%,$alpha)'
       ..beginPath()
       ..moveTo(pixelPerWidth / 2, 0)
       ..lineTo(pixelPerWidth, pixelPerHeight * 0.25)
@@ -232,8 +239,30 @@ class MousePositionHighlightingSystem extends VoidEntitySystem {
       ..lineTo(0, pixelPerHeight * 0.75)
       ..lineTo(0, pixelPerHeight * 0.25)
       ..closePath()
-      ..fill()
-      ..restore();
+      ..fill();
+    if (hasCurrentAction) {
+      ctx
+        ..strokeStyle = 'hsla(0,0%,0%,0.5)'
+        ..lineWidth = 5
+        ..beginPath();
+      if (gsm.validAction) {
+        ctx
+          ..moveTo(pixelPerWidth / 4, pixelPerHeight / 2)
+          ..lineTo(pixelPerWidth / 2, pixelPerHeight * 0.65)
+          ..lineTo(pixelPerWidth * 0.75, pixelPerHeight / 4);
+      } else {
+        ctx
+          ..moveTo(pixelPerWidth * 0.25, pixelPerHeight * 0.25)
+          ..lineTo(pixelPerWidth * 0.75, pixelPerHeight * 0.75)
+          ..moveTo(pixelPerWidth * 0.25, pixelPerHeight * 0.75)
+          ..lineTo(pixelPerWidth * 0.75, pixelPerHeight * 0.25);
+      }
+      ctx
+        ..stroke()
+        ..closePath();
+    }
+
+    ctx.restore();
   }
 
   @override

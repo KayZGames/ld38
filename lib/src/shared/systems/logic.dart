@@ -76,6 +76,9 @@ class BuildRoadActionSystem extends EntityProcessingSystem {
         ]);
         gm.add(e, temporaryRoadGroup);
       }
+      gsm.validAction = true;
+    } else {
+      gsm.validAction = false;
     }
   }
 }
