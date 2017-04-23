@@ -8,6 +8,14 @@ class MapManager extends Manager {
   }
 
   TerrainTile getTile(int x, int y) => map.map[y][x];
+
+  void createBuilding(int x, int y, String buildingId) {
+    world.createAndAddEntity([new Position(x, y), new Building(buildingId)]);
+    var roadSignX = y % 2 == 0 ? x + 1 : x;
+    world.createAndAddEntity(
+        [new Position(roadSignX, y + 1), new Building('road_sign')]);
+    world.createAndAddEntity([new Road(x, y, roadSignX, y + 1)]);
+  }
 }
 
 enum TileType { empty, water, carbon }
@@ -27,7 +35,8 @@ class TerrainMap implements Graph<TerrainTile> {
 
   Iterable<TerrainTile> get allNodes => map.expand((rows) => rows).toList();
   num getDistance(TerrainTile a, TerrainTile b) => 1;
-  num getHeuristicDistance(TerrainTile a, TerrainTile b) => (a.y - b.y).abs() + (a.x - b.x).abs();
+  num getHeuristicDistance(TerrainTile a, TerrainTile b) =>
+      (a.y - b.y).abs() + (a.x - b.x).abs();
   Iterable<TerrainTile> getNeighboursOf(TerrainTile node) {
     List<TerrainTile> result = [];
     final x = node.x;
@@ -69,10 +78,13 @@ class TerrainMap implements Graph<TerrainTile> {
   }
 
   static TerrainTile _generateTile(int x, int y) {
+    if ((maxX ~/ 2 - x).abs() <= 2 || (maxY ~/ 2 - y).abs() <= 2) {
+      return new TerrainTile(x, y, TileType.empty);
+    }
     final value = random.nextDouble();
-    if (value < 0.02) {
+    if (value < 0.06) {
       return new TerrainTile(x, y, TileType.water);
-    } else if (value < 0.05) {
+    } else if (value < 0.15) {
       return new TerrainTile(x, y, TileType.carbon);
     }
     return new TerrainTile(x, y, TileType.empty);
