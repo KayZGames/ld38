@@ -43,7 +43,7 @@ class Game extends GameBase {
         new SlimeRenderingSystem(ctx),
         new BuildingSelectionRenderingSystem(ctx, spriteSheet),
 //        new DebugCoordRenderingSystem(ctx),
-        new FpsRenderingSystem(ctx, fillStyle: 'white'),
+//        new FpsRenderingSystem(ctx, fillStyle: 'white'),
         new BuildRoadActionSystem(),
         new BuildRoadExecutionSystem(),
         new BuildRoadAbortSystem(),
